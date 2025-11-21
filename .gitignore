@@ -1,0 +1,61 @@
+# Gradle
+.gradle/
+build/
+
+# Maven
+/target/
+
+# IntelliJ
+.idea/
+*.iml
+*.iws
+*.ipr
+out/
+
+# Eclipse
+.project
+.classpath
+.settings/
+
+# VS Code
+.vscode/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+logs/
+*.log
+
+# Runtime
+*.jar
+*.war
+*.ear
+
+# Java
+*.class
+
+# Env files
+.env
+
+# Node
+node_modules/
+
+# Others
+/.cache/
+/.mvn/
+
+# Ignore local application properties (if you store secrets locally)
+application-*.properties
+
+# Generated reports
+build/reports/
+
+# Ignore IDE workspace files
+.idea/
+*.iml
+
+# Ignore Gradle wrapper jar (if you prefer to keep it, remove this)
+# gradle/wrapper/gradle-wrapper.jar
+
