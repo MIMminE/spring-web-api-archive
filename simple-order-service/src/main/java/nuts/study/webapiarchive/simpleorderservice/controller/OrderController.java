@@ -1,5 +1,6 @@
 package nuts.study.webapiarchive.simpleorderservice.controller;
 
+import lombok.RequiredArgsConstructor;
 import nuts.study.webapiarchive.simpleorderservice.controller.dto.OrderCreateRequest;
 import nuts.study.webapiarchive.simpleorderservice.domain.order.ItemList;
 import nuts.study.webapiarchive.simpleorderservice.domain.order.Order;
@@ -13,18 +14,18 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/orders")
+@RequiredArgsConstructor
 public class OrderController {
 
-    private final OrderService orderService = new OrderService();
+    private final OrderService orderService;
 
     @PostMapping
     public ResponseEntity<Order> create(@RequestBody OrderCreateRequest request) {
-        // 요청에서 ItemList가 null일 수 있음 — 간단 검증
-        ItemList item = request.getProduct();
+        ItemList item = request.product();
         if (item == null) {
             return ResponseEntity.badRequest().build();
         }
-        Order order = orderService.create(item, request.getQuantity());
+        Order order = orderService.create(item, request.quantity());
         return ResponseEntity.status(HttpStatus.CREATED).body(order);
     }
 }

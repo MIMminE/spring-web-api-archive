@@ -1,53 +1,61 @@
 package nuts.study.webapiarchive.simpleorderservice.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import nuts.study.webapiarchive.simpleorderservice.controller.dto.OrderCreateRequest;
 import nuts.study.webapiarchive.simpleorderservice.domain.order.ItemList;
-import org.junit.jupiter.api.BeforeEach;
+import nuts.study.webapiarchive.simpleorderservice.domain.order.Order;
+import nuts.study.webapiarchive.simpleorderservice.domain.order.OrderService;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.http.MediaType;
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import tools.jackson.databind.ObjectMapper;
 
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@WebMvcTest(OrderController.class)
 public class OrderControllerTest {
 
+    @Autowired
     private MockMvc mockMvc;
-    private final ObjectMapper objectMapper = new ObjectMapper();
 
-    @BeforeEach
-    void setUp() {
-        OrderController controller = new OrderController();
-        MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter(objectMapper);
-        mockMvc = MockMvcBuilders.standaloneSetup(controller)
-                .setMessageConverters(converter)
-                .build();
-    }
+    @Autowired
+    private ObjectMapper objectMapper;
+
+    @MockitoBean
+    private OrderService orderService;
 
     @Test
-    void postOrders_withValidItem_returnsCreated_andEchoesProduct() throws Exception {
-        OrderCreateRequest req = new OrderCreateRequest(ItemList.ITEM_B, 5);
+    void create_shouldReturnCreated_andBody() throws Exception {
+        // arrange
+        when(orderService.create(eq(ItemList.ITEM_A), eq(2)))
+                .thenReturn(Order.of(ItemList.ITEM_A, 2));
 
+        OrderCreateRequest request = new OrderCreateRequest(ItemList.ITEM_A, 2);
+        String json = objectMapper.writeValueAsString(request);
+
+        // act & assert
         mockMvc.perform(post("/orders")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(req)))
+                        .content(json))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.product").value("ITEM_B"))
-                .andExpect(jsonPath("$.quantity").value(5));
+                .andExpect(jsonPath("$.product").value("ITEM_A"))
+                .andExpect(jsonPath("$.quantity").value(2));
     }
 
     @Test
-    void postOrders_withInvalidItem_returnsBadRequest() throws Exception {
-        String body = "{ \"product\": \"INVALID_ITEM\", \"quantity\": 1 }";
+    void create_withNullProduct_shouldReturnBadRequest() throws Exception {
+        OrderCreateRequest request = new OrderCreateRequest(null, 1);
+        String json = objectMapper.writeValueAsString(request);
 
         mockMvc.perform(post("/orders")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(body))
+                        .content(json))
                 .andExpect(status().isBadRequest());
     }
 }
-

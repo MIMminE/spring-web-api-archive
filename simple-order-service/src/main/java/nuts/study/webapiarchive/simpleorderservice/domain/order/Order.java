@@ -1,23 +1,25 @@
 package nuts.study.webapiarchive.simpleorderservice.domain.order;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
+import lombok.Getter;
 
 @Entity
-public record Order(
-        @Id @GeneratedValue(strategy = GenerationType.IDENTITY) Long id,
-        ItemList product,
-        int quantity
-) {
-    // 편의 보조 생성자: id를 생략하고 생성할 수 있게 함
-    public Order(ItemList product, int quantity) {
-        this(null, product, quantity);
-    }
+@Table(name = "orders")
+@Getter
+public class Order {
 
-    // 편의 팩토리 메서드
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private ItemList product;
+
+    private int quantity;
+
     public static Order of(ItemList product, int quantity) {
-        return new Order(product, quantity);
+        Order order = new Order();
+        order.product = product;
+        order.quantity = quantity;
+        return order;
     }
 }
