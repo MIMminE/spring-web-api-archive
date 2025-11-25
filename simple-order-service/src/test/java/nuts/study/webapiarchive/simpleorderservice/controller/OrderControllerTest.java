@@ -4,13 +4,16 @@ import nuts.study.webapiarchive.simpleorderservice.controller.dto.OrderCreateReq
 import nuts.study.webapiarchive.simpleorderservice.domain.order.ItemList;
 import nuts.study.webapiarchive.simpleorderservice.domain.order.Order;
 import nuts.study.webapiarchive.simpleorderservice.domain.order.OrderService;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 import org.springframework.test.web.servlet.MockMvc;
-import tools.jackson.databind.ObjectMapper;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
@@ -18,17 +21,24 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(OrderController.class)
+@ExtendWith(MockitoExtension.class)
 public class OrderControllerTest {
 
-    @Autowired
     private MockMvc mockMvc;
 
-    @Autowired
     private ObjectMapper objectMapper;
 
-    @MockitoSpyBean
+    @Mock
     private OrderService orderService;
+
+    @InjectMocks
+    private OrderController orderController;
+
+    @BeforeEach
+    void setup() {
+        mockMvc = MockMvcBuilders.standaloneSetup(orderController).build();
+        objectMapper = new ObjectMapper();
+    }
 
     @Test
     void create_shouldReturnCreated_andBody() throws Exception {
