@@ -2,9 +2,9 @@ name: CI (root)
 
 on:
   push:
-    branches: ["main", "master"]
+    branches: [ "main", "master" ]
   pull_request:
-    branches: ["main", "master"]
+    branches: [ "main", "master" ]
 
 jobs:
   build:
@@ -23,8 +23,9 @@ jobs:
           cache: gradle
 
       - name: Grant execute permission for subproject gradlew
-        run: chmod +x ./simple-order-service/gradlew
+        working-directory: ./simple-order-service
+        run: chmod +x ./gradlew
 
       - name: Run tests (simple-order-service)
-        run: ./simple-order-service/gradlew test --no-daemon
-
+        working-directory: ./simple-order-service
+        run: ./gradlew test --no-daemon
