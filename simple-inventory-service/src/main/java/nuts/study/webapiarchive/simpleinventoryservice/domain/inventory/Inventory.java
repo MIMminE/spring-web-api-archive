@@ -14,10 +14,10 @@ public class Inventory {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private ItemList item;
-    private Integer stock;
-    private Double price;
+    private int stock;
+    private int price;
 
-    public static Inventory of(ItemList item, Integer stock, Double price) {
+    public static Inventory of(ItemList item, int stock, int price) {
         Inventory inventory = new Inventory();
         inventory.item = item;
         inventory.stock = stock;

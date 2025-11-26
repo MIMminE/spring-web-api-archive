@@ -2,8 +2,8 @@ package nuts.study.webapiarchive.simpleinventoryservice.controller.dto;
 
 public record DeductResponse(
         boolean success,
-        int requestItem,
+        String requestItem,
         int requestQuantity,
-
+        int itemPrice
 ) {
 }

@@ -11,7 +11,7 @@ public class InventoryService {
     private final InventoryRepository inventoryRepository;
 
     @Transactional
-    public void deductInventory(ItemList item, int quantity) {
+    public Inventory deductInventory(ItemList item, int quantity) {
         Inventory inventory = inventoryRepository.findByItem(item)
                 .orElseThrow(() -> new IllegalArgumentException("Item not found in inventory: " + item));
 
@@ -19,7 +19,8 @@ public class InventoryService {
             throw new IllegalArgumentException("Insufficient stock for item: " + item);
         }
 
-        inventory.decreaseStock(inventory.getStock() - quantity);
+        inventory.decreaseStock(quantity);
+        return inventory;
     }
 
     public int getStock(ItemList item) {
