@@ -7,6 +7,7 @@ import nuts.study.webapiarchive.simpleorderservice.domain.order.ItemList;
 import nuts.study.webapiarchive.simpleorderservice.domain.order.Order;
 import nuts.study.webapiarchive.simpleorderservice.domain.order.OrderRepository;
 import nuts.study.webapiarchive.simpleorderservice.domain.order.OrderService;
+import nuts.study.webapiarchive.simpleorderservice.exception.OrderException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,6 +19,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @SpringBootTest
 public class OrderAppServiceTest {
@@ -67,14 +69,8 @@ public class OrderAppServiceTest {
                 .create(Mockito.any(), Mockito.anyInt());
 
         OrderCreateRequest request = new OrderCreateRequest(ItemList.ITEM_B, 5);
-
-        appService.crateOrder(request);
-
-        List<Order> orders = orderRepository.findAll();
-        List<Log> logs = logRepository.findAll();
-
-        assertThat(orders).isEmpty();
-        assertThat(logs).hasSize(1);
-        assertThat(logs.get(0).getMessage()).startsWith("주문 생성 실패");
+        assertThatThrownBy(() -> appService.crateOrder(request))
+                .isInstanceOf(OrderException.class)
+                .hasMessageContaining("주문 생성에 실패했습니다.");
     }
 }

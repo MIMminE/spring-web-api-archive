@@ -1,9 +1,11 @@
 package nuts.study.webapiarchive.simpleorderservice.controller;
 
 import nuts.study.webapiarchive.simpleorderservice.controller.dto.OrderCreateRequest;
+import nuts.study.webapiarchive.simpleorderservice.controller.dto.OrderCreateResponse;
 import nuts.study.webapiarchive.simpleorderservice.domain.order.ItemList;
 import nuts.study.webapiarchive.simpleorderservice.domain.order.Order;
 import nuts.study.webapiarchive.simpleorderservice.domain.order.OrderService;
+import nuts.study.webapiarchive.simpleorderservice.service.OrderAppService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -29,7 +31,7 @@ public class OrderControllerTest {
     private ObjectMapper objectMapper;
 
     @Mock
-    private OrderService orderService;
+    private OrderAppService orderAppService;
 
     @InjectMocks
     private OrderController orderController;
@@ -43,8 +45,8 @@ public class OrderControllerTest {
     @Test
     void create_shouldReturnCreated_andBody() throws Exception {
         // arrange
-        when(orderService.create(eq(ItemList.ITEM_A), eq(2)))
-                .thenReturn(Order.of(ItemList.ITEM_A, 2));
+        when(orderAppService.crateOrder(new OrderCreateRequest(ItemList.ITEM_A, 2)))
+                .thenReturn(new OrderCreateResponse(true, ItemList.ITEM_A, 2));
 
         OrderCreateRequest request = new OrderCreateRequest(ItemList.ITEM_A, 2);
         String json = objectMapper.writeValueAsString(request);

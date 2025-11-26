@@ -7,8 +7,8 @@ on:
     branches: [ "main", "master" ]
 
 jobs:
-  build:
-    name: Build & Test (root -> simple-order-service)
+  test-order:
+    name: Test simple-order-service
     runs-on: ubuntu-latest
 
     steps:
@@ -22,10 +22,33 @@ jobs:
           java-version: '17'
           cache: gradle
 
-      - name: Grant execute permission for subproject gradlew
+      - name: Grant execute permission for subproject gradlew (simple-order-service)
         working-directory: ./simple-order-service
         run: chmod +x ./gradlew
 
       - name: Run tests (simple-order-service)
         working-directory: ./simple-order-service
+        run: ./gradlew test --no-daemon
+
+  test-inventory:
+    name: Test simple-inventory-service
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+          cache: gradle
+
+      - name: Grant execute permission for subproject gradlew (simple-inventory-service)
+        working-directory: ./simple-inventory-service
+        run: chmod +x ./gradlew
+
+      - name: Run tests (simple-inventory-service)
+        working-directory: ./simple-inventory-service
         run: ./gradlew test --no-daemon
